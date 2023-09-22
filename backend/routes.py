@@ -100,8 +100,7 @@ def update_song(id):
     id=int(id)
     song_ext = request.get_data()
     song_ext = json_util.loads(song_ext)
-    song = db.songs.find_one({"id": id})    
-    
+    song = db.songs.find_one({"id": id})        
     if not song:
         return {"message":"song not found"},404
     else:   
@@ -113,3 +112,14 @@ def update_song(id):
             song = db.songs.find_one({"id": id})
             song = json_util.dumps(song)          
             return song,200
+
+
+@app.route("/song/<id>", methods=["DELETE"])
+def delete_song(id):
+    id=int(id)
+    song_del = db.songs.delete_one({"id": id})        
+    if song_del.deleted_count == 0:
+        return {"message":"song not found"},404   
+    else:                
+        return {},204
+
