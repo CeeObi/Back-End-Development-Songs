@@ -115,9 +115,8 @@ def update_song(id):
 
 
 @app.route("/song/<id>", methods=["DELETE"])
-def delete_song(id):
-    id=int(id)
-    song_del = db.songs.delete_one({"id": id})        
+def delete_song(id):    
+    song_del = db.songs.delete_one({"id": int(id)})        
     if song_del.deleted_count == 0:
         return {"message":"song not found"},404   
     else:                
