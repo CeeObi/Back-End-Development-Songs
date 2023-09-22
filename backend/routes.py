@@ -48,6 +48,7 @@ db.songs.insert_many(songs_list)
 def parse_json(data):
     return json.loads(json_util.dumps(data))
 
+
 ######################################################################
 # INSERT CODE HERE
 ######################################################################
@@ -74,8 +75,7 @@ def songs():
 @app.route("/song/<id>")
 def get_song_by_id(id):
     id=int(id)
-    song = db.songs.find_one({"id": id})
-    
+    song = db.songs.find_one({"id": id})    
     if not song:
         return {"message":"song with id not found"},404
     else:
@@ -115,9 +115,8 @@ def update_song(id):
 
 
 @app.route("/song/<id>", methods=["DELETE"])
-def delete_song(id):
-    id=int(id)
-    song_del = db.songs.delete_one({"id": id})        
+def delete_song(id):    
+    song_del = db.songs.delete_one({"id": int(id)})        
     if song_del.deleted_count == 0:
         return {"message":"song not found"},404   
     else:                
