@@ -81,3 +81,35 @@ def get_song_by_id(id):
     else:
         song = json_util.dumps(song)        
         return song,200
+
+
+@app.route("/song", methods=["POST"])
+def create_song():
+    song_ext = request.get_data()
+    song_ext = json_util.loads(song_ext)
+    db_songs = db.songs.find({})
+    for each_song in db_songs:        
+        if each_song["id"] == song_ext["id"]:
+            return {"Message":f"song with id {song_ext['id']} already present"}        
+    add_song = db.songs.insert_one(song_ext)    
+    return {"inserted id":{"$oid":f"{add_song.inserted_id}"}}
+
+
+@app.route("/song/<id>", methods=["PUT"])
+def update_song(id):
+    id=int(id)
+    song_ext = request.get_data()
+    song_ext = json_util.loads(song_ext)
+    song = db.songs.find_one({"id": id})    
+    
+    if not song:
+        return {"message":"song not found"},404
+    else:   
+        if song["lyrics"] == song_ext["lyrics"]:
+            return {"message":"song found, but nothing updated"}
+        else:
+            song = json_util.dumps(song)        
+            update = db.songs.update_one({"id": id}, {"$set": song_ext })
+            song = db.songs.find_one({"id": id})
+            song = json_util.dumps(song)          
+            return song,200
