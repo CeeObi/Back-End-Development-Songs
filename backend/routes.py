@@ -64,9 +64,20 @@ def count():
 
 @app.route("/song")
 def songs():     
-    allsong = db.songs.find({})
-    song_list=[]
-    for each_song in allsong:
-        song_list.append(each_song)
-    print(allsong)
-    return {"songs":1}, 200
+    allsong = db.songs.find({})    
+    song_list=json_util.dumps(allsong)
+    song_list = json.loads(song_list)
+    return {"songs":song_list}, 200
+
+
+
+@app.route("/song/<id>")
+def get_song_by_id(id):
+    id=int(id)
+    song = db.songs.find_one({"id": id})
+    
+    if not song:
+        return {"message":"song with id not found"},404
+    else:
+        song = json_util.dumps(song)        
+        return song,200
