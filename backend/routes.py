@@ -51,3 +51,22 @@ def parse_json(data):
 ######################################################################
 # INSERT CODE HERE
 ######################################################################
+@app.route("/health")
+def health():
+    return {"status":"OK"}
+
+
+@app.route("/count")
+def count():     
+    count = db.songs.count_documents({})
+    return {"count":count}, 200
+
+
+@app.route("/song")
+def songs():     
+    allsong = db.songs.find({})
+    song_list=[]
+    for each_song in allsong:
+        song_list.append(each_song)
+    print(allsong)
+    return {"songs":1}, 200
